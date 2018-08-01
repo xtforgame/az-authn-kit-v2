@@ -1,17 +1,20 @@
 /* eslint-disable no-underscore-dangle */
-import ModuleBase from './ModuleBase';
 import JwtSessionHelper from 'jwt-session-helper';
+import ModuleBase from './ModuleBase';
 
 export default class AuthCore extends ModuleBase {
   static $name = 'authCore';
+
   static $type = 'service';
+
   static $inject = [];
+
   static $funcDeps = {
     init: [],
     start: [],
   };
 
-  constructor(secret, options = {}){
+  constructor(secret, options = {}) {
     super();
     const {
       algorithm = 'HS256',
@@ -26,7 +29,9 @@ export default class AuthCore extends ModuleBase {
         issuer,
         expiresIn,
       },
-      parsePayload: ({ user, provider_id, provider_user_id, ...rest }) => ({
+      parsePayload: ({
+        user, provider_id, provider_user_id, ...rest
+      }) => ({
         user_id: user.id,
         user_name: user.name,
         auth_type: provider_id,
@@ -37,7 +42,7 @@ export default class AuthCore extends ModuleBase {
         ...rest,
       }),
       exposeInfo: (originalData, payload) => {
-        let result = { ...payload };
+        const result = { ...payload };
         delete result.auth_type;
         delete result.auth_id;
         delete result.expiry_date;
@@ -51,31 +56,29 @@ export default class AuthCore extends ModuleBase {
   // =====================================================
 
   decodeToken = (token) => {
-    try{
+    try {
       return this.jwtSessionHelper.decode(token);
-    }catch(e){
-      console.log('e :', e);
+    } catch (e) {
+      console.warn('e :', e);
     }
     return null;
   };
 
   verifyToken = (token) => {
-    try{
+    try {
       return this.jwtSessionHelper.verify(token);
-    }catch(e){
-      console.log('e :', e);
+    } catch (e) {
+      console.warn('e :', e);
     }
     return null;
   };
 
-  signToken = (token) => {
-    return this.jwtSessionHelper.sign(token);
-  };
+  signToken = token => this.jwtSessionHelper.sign(token);
 
   verifyAuthorization(headers) {
     let authorization = headers;
-    if(typeof headers !== 'string'){
-      authorization = headers.authorization;
+    if (typeof headers !== 'string') {
+      ({ authorization } = headers);
     }
     if (!authorization || typeof authorization !== 'string') {
       return null;

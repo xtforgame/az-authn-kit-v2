@@ -1,16 +1,13 @@
-/*eslint-disable no-unused-vars, no-undef */
+/* eslint-disable no-unused-vars, no-undef */
 import chai from 'chai';
 
 import path from 'path';
 import fs from 'fs';
-import {
-  AuthCore,
-  SequelizeStore,
-} from '../../src/library';
 import Azldi from 'azldi';
 
 import Sequelize from 'sequelize';
 
+import AsuOrm from 'az-sequelize-utils';
 import {
   postgresPort,
   postgresUser,
@@ -23,24 +20,27 @@ import {
 
 // =================
 
-import AsuOrm from 'az-sequelize-utils';
+import {
+  AuthCore,
+  SequelizeStore,
+} from '../../src/library';
 import createTestData from '../test-data/createTestData';
 
-let logFiles = {};
+const logFiles = {};
 
-let write = (file, data) => {
-  let logFile = logFiles[file] = logFiles[file] || fs.createWriteStream(file, {flags : 'w'});
-  logFile.write(data);
-}
+const write = (file, data) => {
+  logFiles[file] = logFiles[file] || fs.createWriteStream(file, { flags: 'w' });
+  logFiles[file].write(data);
+};
 
-function databaseLogger(...args){ // eslint-disable-line no-unused-vars
-  write(path.resolve(__dirname, './SequelizeStore.spec.log'), args[0] + '\n');
+function logger(...args) { // eslint-disable-line no-unused-vars
+  write(path.resolve(__dirname, './SequelizeStore.spec.log'), `${args[0]}\n`);
 }
 
 const secret = fs.readFileSync(path.join(__dirname, '../self-signed/privatekey.pem'), 'utf8');
 
 class AzRdbmsMgr {
-  constructor(asuModelDefs, { databaseLogger = (() => {}) }){
+  constructor(asuModelDefs, { databaseLogger = (() => {}) }) {
     this.asuModelDefs = asuModelDefs;
     this.databaseLogger = databaseLogger;
     this.sequelizeDb = new Sequelize(getConnectString(postgresUser), {
@@ -51,43 +51,43 @@ class AzRdbmsMgr {
     this.resourceManager = new AsuOrm(this.sequelizeDb, this.asuModelDefs);
   }
 
-  sync(force = true){
-    return this.resourceManager.sync({force});
+  sync(force = true) {
+    return this.resourceManager.sync({ force });
   }
 }
 
 // =================
 
-let expect = chai.expect;
+const { expect } = chai;
 
-describe('SequelizeStore', function(){
-  describe('Basic', function(){
+describe('SequelizeStore', () => {
+  describe('Basic', () => {
     const key = fs.readFileSync(path.join(__dirname, '../self-signed/privatekey.pem'), 'utf8');
-    let Classes = [
+    const Classes = [
       SequelizeStore,
       AuthCore,
     ];
-    let digestOrder = [
+    const digestOrder = [
       AuthCore,
       SequelizeStore,
     ];
 
     let authCore = null;
-    beforeEach(function() {
-      let azldi = new Azldi();
+    beforeEach(() => {
+      const azldi = new Azldi();
 
       azldi.register(Classes);
 
-      Classes.forEach(Class => {
-        let classInfo = azldi.getClassInfo(Class.$name);
+      Classes.forEach((Class) => {
+        const classInfo = azldi.getClassInfo(Class.$name);
         // console.log('classInfo :', classInfo);
       });
 
       let digestIndex = 0;
 
-      let results = azldi.digest({
+      const results = azldi.digest({
         onCreate: (obj) => {
-          digestIndex++
+          digestIndex++;
         },
         appendArgs: {
           authCore: [key, {}],
@@ -95,14 +95,14 @@ describe('SequelizeStore', function(){
         },
       });
 
-      authCore = results[1];
+      [, authCore] = results;
 
       return azldi.runAsync('init', []);
     });
 
-    it('should be able to create', function(){
+    it('should be able to create', function () {
       this.timeout(9000);
-      let token = authCore.signToken({
+      const token = authCore.signToken({
         userid: 1,
         username: 'rick',
         auth_type: 'basic',
@@ -118,7 +118,7 @@ describe('SequelizeStore', function(){
         authorization: `Bearer ${token}`,
       });
 
-      let user = {
+      const user = {
         id: 1,
         username: 'rick',
         privilege: 'admin',
@@ -134,35 +134,35 @@ describe('SequelizeStore', function(){
     });
   });
 
-  describe('RdbmsMgr', function(){
+  describe('RdbmsMgr', () => {
     const key = fs.readFileSync(path.join(__dirname, '../self-signed/privatekey.pem'), 'utf8');
-    
-    let Classes = [
+
+    const Classes = [
       SequelizeStore,
       AuthCore,
     ];
-    let digestOrder = [
+    const digestOrder = [
       AuthCore,
       SequelizeStore,
     ];
 
     let sequelizeStore = null;
     let azldi = null;
-    beforeEach(function() {
+    beforeEach(() => {
       azldi = new Azldi();
 
       azldi.register(Classes);
 
-      Classes.forEach(Class => {
-        let classInfo = azldi.getClassInfo(Class.$name);
+      Classes.forEach((Class) => {
+        const classInfo = azldi.getClassInfo(Class.$name);
         // console.log('classInfo :', classInfo);
       });
 
       let digestIndex = 0;
 
-      let results = azldi.digest({
+      const results = azldi.digest({
         onCreate: (obj) => {
-          digestIndex++
+          digestIndex++;
         },
         appendArgs: {
           authCore: [key, {}],
@@ -170,51 +170,42 @@ describe('SequelizeStore', function(){
         },
       });
 
-      sequelizeStore = results[0];
+      [sequelizeStore] = results;
 
       return resetTestDbAndTestRole();
     });
 
-    it('should be able to create', function(){
+    it('should be able to create', function () {
       this.timeout(9000);
-      let azRdbmsMgr = new AzRdbmsMgr(sequelizeStore.getDefaultAsuModels(), {
-        databaseLogger,
+      const azRdbmsMgr = new AzRdbmsMgr(sequelizeStore.getDefaultAsuModels(), {
+        databaseLogger: logger,
       });
       let user = null;
       return azRdbmsMgr.sync()
-      .then(() => {
-        return createTestData(azRdbmsMgr.resourceManager, false);
-      })
-      .then(() => {
-        return azldi.runAsync('init', [], {
+        .then(() => createTestData(azRdbmsMgr.resourceManager, false))
+        .then(() => azldi.runAsync('init', [], {
           appendArgs: {
             sequelizeStore: [azRdbmsMgr.resourceManager],
           },
-        });
-      })
-      .then(() => {
-        return sequelizeStore.findUserWithAccountLink(1);
-      })
-      .then(_user => {
-        user = _user
-        let username = 'xx';
-        return sequelizeStore.createAccountLink({
-          provider_id: 'basic2',
-          provider_user_id: username,
-          provider_user_access_info: {
-            password: 'xx',
-          },
-        }, user.id);
-      })
-      .then(accountLink => {
+        }))
+        .then(() => sequelizeStore.findUserWithAccountLink(1))
+        .then((_user) => {
+          user = _user;
+          const username = 'xx';
+          return sequelizeStore.createAccountLink({
+            provider_id: 'basic2',
+            provider_user_id: username,
+            provider_user_access_info: {
+              password: 'xx',
+            },
+          }, user.id);
+        })
+        .then((accountLink) => {
         // console.log('accountLink :', accountLink);
-        let username = 'xx';
-        return sequelizeStore.findAccountLink('basic2', username);
-      })
-      .then(accountLink => {
-        // console.log('accountLink :', accountLink);
-        return sequelizeStore.deleteAccountLinkFromUser(user.id, 'basic2', true);
-      });
+          const username = 'xx';
+          return sequelizeStore.findAccountLink('basic2', username);
+        })
+        .then(accountLink => sequelizeStore.deleteAccountLinkFromUser(user.id, 'basic2', true));
     });
   });
 });

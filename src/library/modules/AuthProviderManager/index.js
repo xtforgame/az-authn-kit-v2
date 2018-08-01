@@ -4,22 +4,26 @@ import ModuleBase from '../ModuleBase';
 
 export default class AuthProviderManager extends ModuleBase {
   static $name = 'authProviderManager';
+
   static $type = 'service';
+
   static $inject = ['sequelizeStore'];
+
   static $funcDeps = {
     init: [],
     start: [],
   };
 
-  constructor(sequelizeStore, supportedProviders, options){
+  constructor(sequelizeStore, supportedProviders, options) {
     super();
     this.accountLinkStore = sequelizeStore.getAccountLinkStore();
     this.supportedProviders = supportedProviders;
 
     this.providerMap = {};
-    Object.keys(this.supportedProviders).forEach(key => {
+    Object.keys(this.supportedProviders).forEach((key) => {
       const supportedProvider = this.supportedProviders[key];
-      this.providerMap[key] = new supportedProvider.provider(this.accountLinkStore);
+      const Provider = supportedProvider.provider;
+      this.providerMap[key] = new Provider(this.accountLinkStore);
     });
     this.options = options;
   }

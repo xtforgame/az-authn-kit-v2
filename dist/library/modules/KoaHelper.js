@@ -9,28 +9,19 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _class, _temp;
 
+var _azRestfulHelpers = require('az-restful-helpers');
+
 var _ModuleBase2 = require('./ModuleBase');
 
 var _ModuleBase3 = _interopRequireDefault(_ModuleBase2);
 
-var _azRestfulHelpers = require('az-restful-helpers');
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var privateData = new WeakMap();
-
-var Session = function Session(info, token) {
-  _classCallCheck(this, Session);
-
-  this.info = info;
-  this.token = token;
-};
 
 var KoaHelper = (_temp = _class = function (_ModuleBase) {
   _inherits(KoaHelper, _ModuleBase);
@@ -43,6 +34,7 @@ var KoaHelper = (_temp = _class = function (_ModuleBase) {
     _this.requireAdminPrivilege = function (ctx, next) {
       _this._ensureUserSession(ctx);
       var userSession = ctx.local.userSession;
+
       if (!userSession) {
         _azRestfulHelpers.RestfulError.koaThrowWith(ctx, 401, 'Unauthenticated');
       }
@@ -65,8 +57,8 @@ var KoaHelper = (_temp = _class = function (_ModuleBase) {
         return provider.authenticate(json);
       }).then(function (account) {
         var provider_user_access_info = account.provider_user_access_info;
-        delete account.provider_user_access_info;
 
+        delete account.provider_user_access_info;
         var _this$authCore$create = _this.authCore.createSession(account),
             info = _this$authCore$create.info;
 
@@ -82,6 +74,7 @@ var KoaHelper = (_temp = _class = function (_ModuleBase) {
         if (error instanceof _azRestfulHelpers.RestfulError) {
           return error.koaThrow(ctx);
         }
+        throw error;
       });
     };
 

@@ -2,25 +2,29 @@
 import fs from 'fs';
 import pg from 'pg';
 
-// import az_pgdef_lib from './az_pgdef_lib';
-
-if (process.platform === 'linux') {
-  console.log(process.env.POSTGRESQL_PORT_5432_TCP_ADDR);
-  console.log(process.env.POSTGRESQL_PORT_5432_TCP_PORT);
-}
-
-
 export class ErrorTypes {
   static Connection = "connection";
+
   static Readfile = "readfile";
+
   static Query = "query";
 }
 
 export class ConnectionState {
   static Connecting = "connecting";
+
   static Connected = "connected";
+
   static Disconnecting = "disconnecting";
+
   static Disconnected = "disconnected";
+}
+
+class AzPgError extends Error {
+  constructor(errInfo) {
+    super(`Error Type: ${errInfo.type}`);
+    this.errInfo = errInfo;
+  }
 }
 
 function read_file_promise(file, encoding) {
@@ -28,7 +32,7 @@ function read_file_promise(file, encoding) {
     fs.readFile(file, encoding, (error, data) => {
       if (error) {
         // reject(new Error(error));
-        reject({ error_type: ErrorTypes.Readfile, error });
+        reject(new AzPgError({ type: ErrorTypes.Readfile, error }));
       } else {
         resolve(data);
       }
@@ -76,7 +80,7 @@ export class AzPgClient {
           // console.error('could not connect to postgres', error);
           // reject(new Error(error));
           this.connection_state = ConnectionState.Disconnected;
-          reject({ client: this, error_type: ErrorTypes.Connection, error });
+          reject(new AzPgError({ client: this, type: ErrorTypes.Connection, error }));
         } else {
           this.connection_state = ConnectionState.Connected;
           resolve({ client: this, result: this });
@@ -107,12 +111,14 @@ export class AzPgClient {
       this.client.query(query_text, (error, result) => {
         if (error) {
           // reject(new Error(error));
-          const near = error.position && error.position >= query_text.length &&
-            query_text.substring(
+          const near = error.position && error.position >= query_text.length
+            && query_text.substring(
               Math.max(0, error.position - 5),
               Math.min(error.position + 10, query_text.length),
             );
-          reject({ client: this, error_type: ErrorTypes.Query, error, near });
+          reject(new AzPgError({
+            client: this, type: ErrorTypes.Query, error, near,
+          }));
         } else {
           resolve({ client: this, result });
         }
@@ -124,9 +130,7 @@ export class AzPgClient {
     return read_file_promise(file, encoding)
       .then(data => this.query_promise(data))
       .then(result => Promise.resolve(result))
-      .catch(error =>
-      // return Promise.reject(new Error(error));
-        Promise.reject(error));
+      .catch(error => Promise.reject(error));
   }
 }
 
@@ -155,7 +159,7 @@ class AzPg {
         if (error) {
           // console.error('could not connect to postgres', error);
           // reject(new Error(error));
-          reject({ error_type: ErrorTypes.Connection, client, error });
+          reject(new AzPgError({ type: ErrorTypes.Connection, client, error }));
         } else {
           resolve({ client, result: client });
         }
@@ -168,7 +172,7 @@ class AzPg {
       client.query(query_text, (error, result) => {
         if (error) {
           // reject(new Error(error));
-          reject({ error_type: ErrorTypes.Query, client, error });
+          reject(new AzPgError({ type: ErrorTypes.Query, client, error }));
         } else {
           resolve({ client, result });
         }
@@ -195,9 +199,7 @@ class AzPg {
     return this.read_file_promise(file, encoding)
       .then(data => this.send_query_promise(client, data))
       .then(result => Promise.resolve(result))
-      .catch(error =>
-        // return Promise.reject(new Error(error));
-        Promise.reject(error));
+      .catch(error => Promise.reject(error));
   }
 }
 
@@ -212,22 +214,14 @@ export {
 
 export function removeRoleAndDb(client, dbName, roleName) {
   return _AzPg.disconnect_all_user(client, dbName)
-    .then(result => // eslint-disable-line no-unused-vars
-      // console.log("disconnect_all_user result :", result.result);
-      _AzPg.send_query_promise(client, `DROP DATABASE IF EXISTS ${dbName};`))
-    .then(result => // eslint-disable-line no-unused-vars
-      // console.log("P1 result :", result);
-      _AzPg.send_query_promise(client, `DROP ROLE IF EXISTS ${roleName};`));
+    .then(result => _AzPg.send_query_promise(client, `DROP DATABASE IF EXISTS ${dbName};`))
+    .then(result => _AzPg.send_query_promise(client, `DROP ROLE IF EXISTS ${roleName};`));
 }
 
 export function createRoleAndDb(client, dbName, roleName, rolePassword) {
   return _AzPg.send_query_promise(client, `CREATE ROLE ${roleName} SUPERUSER INHERIT CREATEDB CREATEROLE NOREPLICATION LOGIN PASSWORD '${rolePassword}';`)
-    .then(result => // eslint-disable-line no-unused-vars
-      // console.log("P1 result :", result);
-      _AzPg.send_query_promise(client, `ALTER ROLE ${roleName} VALID UNTIL 'infinity';`))
-    .then(result => // eslint-disable-line no-unused-vars
-      // console.log("P1 result :", result);
-      _AzPg.send_query_promise(client, `CREATE DATABASE ${dbName} OWNER = ${roleName} ${DB_DEFAULT_SETTINGS};`));
+    .then(result => _AzPg.send_query_promise(client, `ALTER ROLE ${roleName} VALID UNTIL 'infinity';`))
+    .then(result => _AzPg.send_query_promise(client, `CREATE DATABASE ${dbName} OWNER = ${roleName} ${DB_DEFAULT_SETTINGS};`));
 }
 
 
@@ -236,24 +230,20 @@ export class AzPgImi {
   static get_system_state(conn) {
     if (conn instanceof pg.Client) {
       return _AzPg.send_query_promise(conn, "SELECT fn_get_core_env_var('system_state');")
-        .then(result =>
-          // console.log("system_state :", result.result.rows[0].fn_get_core_env_var);
-          ({ client: result.client, system_state: result.result.rows[0].fn_get_core_env_var }))
-        .catch(error => Promise.reject({ error, client: conn, system_state: null }));
+        .then(result => ({ client: result.client, system_state: result.result.rows[0].fn_get_core_env_var }))
+        .catch(error => Promise.reject(new AzPgError({ error, client: conn, system_state: null })));
     } else if (typeof conn === "string") {
       return _AzPg.create_connection(conn)
         .then(result => _AzPg.send_query_promise(result.client, "SELECT fn_get_core_env_var('system_state');"))
-        .then(result =>
-          // console.log("system_state :", result.result.rows[0].fn_get_core_env_var);
-          ({ client: result.client, system_state: result.result.rows[0].fn_get_core_env_var }))
+        .then(result => ({ client: result.client, system_state: result.result.rows[0].fn_get_core_env_var }))
         .catch((error) => {
-          if (error.error_type === ErrorTypes.Connection) {
-            return Promise.reject({ error, client: null, system_state: null });
+          if (error.type === ErrorTypes.Connection) {
+            return Promise.reject(new AzPgError({ error, client: null, system_state: null }));
           }
-          return Promise.reject({ error, client: error.client, system_state: null });
+          return Promise.reject(new AzPgError({ error, client: error.client, system_state: null }));
         });
     }
-    return Promise.reject({ error: 'no connect string provided' });
+    return Promise.reject(new AzPgError({ error: 'no connect string provided' }));
   }
 }
 

@@ -39,7 +39,7 @@ function crypt(plain_text, _salt) {
   try {
     return (0, _sha512cryptNode.b64_sha512crypt)(plain_text, salt);
   } catch (e) {
-    console.log(e);
+    console.warn(e);
     return null;
   }
 }

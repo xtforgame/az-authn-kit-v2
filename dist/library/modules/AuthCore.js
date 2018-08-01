@@ -11,13 +11,13 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _class, _temp;
 
-var _ModuleBase2 = require('./ModuleBase');
-
-var _ModuleBase3 = _interopRequireDefault(_ModuleBase2);
-
 var _jwtSessionHelper = require('jwt-session-helper');
 
 var _jwtSessionHelper2 = _interopRequireDefault(_jwtSessionHelper);
+
+var _ModuleBase2 = require('./ModuleBase');
+
+var _ModuleBase3 = _interopRequireDefault(_ModuleBase2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -43,7 +43,7 @@ var AuthCore = (_temp = _class = function (_ModuleBase) {
       try {
         return _this.jwtSessionHelper.decode(token);
       } catch (e) {
-        console.log('e :', e);
+        console.warn('e :', e);
       }
       return null;
     };
@@ -52,7 +52,7 @@ var AuthCore = (_temp = _class = function (_ModuleBase) {
       try {
         return _this.jwtSessionHelper.verify(token);
       } catch (e) {
-        console.log('e :', e);
+        console.warn('e :', e);
       }
       return null;
     };

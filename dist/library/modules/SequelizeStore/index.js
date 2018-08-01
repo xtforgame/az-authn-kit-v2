@@ -11,6 +11,8 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _class, _temp;
 
+var _azRestfulHelpers = require('az-restful-helpers');
+
 var _ModuleBase2 = require('../ModuleBase');
 
 var _ModuleBase3 = _interopRequireDefault(_ModuleBase2);
@@ -22,8 +24,6 @@ var _getAuthAsuModelDefs2 = _interopRequireDefault(_getAuthAsuModelDefs);
 var _normalizeModelsOption = require('./normalizeModelsOption');
 
 var _normalizeModelsOption2 = _interopRequireDefault(_normalizeModelsOption);
-
-var _azRestfulHelpers = require('az-restful-helpers');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -188,7 +188,7 @@ var SequelizeStore = (_temp = _class = function (_ModuleBase) {
       var dataFromDb = origonalResult.dataValues;
 
       var data = {};
-      this.modelsOption[modelName].publicColumns.concat(passAnyway).map(function (columnName) {
+      this.modelsOption[modelName].publicColumns.concat(passAnyway).forEach(function (columnName) {
         data[columnName] = dataFromDb[columnName];
       });
       return data;

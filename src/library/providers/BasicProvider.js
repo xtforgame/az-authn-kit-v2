@@ -1,10 +1,12 @@
-import AuthProvider from './AuthProvider';
 import { RestfulError } from 'az-restful-helpers';
+import AuthProvider from './AuthProvider';
 import { sha512gen_salt, crypt } from '../utils/crypt';
 
 export default class BasicProvider extends AuthProvider {
   static requiredAuthParams = ['username', 'password'];
+
   static providerId = 'basic';
+
   static providerUserIdName = 'username';
 
   verifyAuthParams(authParams, account) {

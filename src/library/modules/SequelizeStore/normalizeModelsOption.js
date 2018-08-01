@@ -2,7 +2,7 @@ import Sequelize from 'sequelize';
 import AsuOrm from 'az-sequelize-utils';
 
 export default (modelsOption = {}) => {
-  let {
+  const {
     user: {
       publicColumns: userPublicColumns = [],
       columns: userColumns = {},
@@ -71,4 +71,4 @@ export default (modelsOption = {}) => {
       },
     },
   };
-}
+};

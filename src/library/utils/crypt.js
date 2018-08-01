@@ -31,7 +31,7 @@ export function crypt(plain_text, _salt) {
   try {
     return b64_sha512crypt(plain_text, salt);
   } catch (e) {
-    console.log(e);
+    console.warn(e);
     return null;
   }
 }

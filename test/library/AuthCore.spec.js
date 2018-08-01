@@ -1,55 +1,55 @@
-/*eslint-disable no-unused-vars, no-undef */
+/* eslint-disable no-unused-vars, no-undef, func-names */
 import chai from 'chai';
 
 import path from 'path';
 import fs from 'fs';
+import Azldi from 'azldi';
 import {
   AuthCore,
 } from '../../src/library';
-import Azldi from 'azldi';
 
-let expect = chai.expect;
+const { expect } = chai;
 
-describe('AuthCore', function(){
-  describe('Basic', function(){
+describe('AuthCore', () => {
+  describe('Basic', () => {
     const key = fs.readFileSync(path.join(__dirname, '../self-signed/privatekey.pem'), 'utf8');
-    let Classes = [
+    const Classes = [
       AuthCore,
     ];
-    let digestOrder = [
+    const digestOrder = [
       AuthCore,
     ];
 
     let authCore = null;
-    beforeEach(function() {
-      let azldi = new Azldi();
+    beforeEach(() => {
+      const azldi = new Azldi();
 
       azldi.register(Classes);
 
-      Classes.forEach(Class => {
-        let classInfo = azldi.getClassInfo(Class.$name);
+      Classes.forEach((Class) => {
+        const classInfo = azldi.getClassInfo(Class.$name);
         // console.log('classInfo :', classInfo);
       });
 
       let digestIndex = 0;
 
-      let results = azldi.digest({
+      const results = azldi.digest({
         onCreate: (obj) => {
-          digestIndex++
+          digestIndex++;
         },
         appendArgs: {
           authCore: [key, {}],
         },
       });
 
-      authCore = results[0];
+      [authCore] = results;
 
       return true;
     });
 
-    it('should be able to create', function(){
+    it('should be able to create', function () {
       this.timeout(9000);
-      let token = authCore.signToken({
+      const token = authCore.signToken({
         user_id: 1,
         user_name: 'rick',
         auth_type: 'basic',
@@ -65,7 +65,7 @@ describe('AuthCore', function(){
         authorization: `Bearer ${token}`,
       });
 
-      let user = {
+      const user = {
         id: 1,
         username: 'rick',
         privilege: 'admin',

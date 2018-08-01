@@ -11,7 +11,6 @@ exports.default = function (_ref) {
       _ref$accountLink = _ref.accountLink,
       accountLinkPublicColumns = _ref$accountLink.publicColumns,
       accountLinkColumns = _ref$accountLink.columns;
-
   return {
     models: {
       user: {

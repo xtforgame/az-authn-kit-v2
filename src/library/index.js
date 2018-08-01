@@ -12,7 +12,7 @@ import {
   crypt,
 } from './utils/crypt';
 
-export{
+export {
   // modules
   ModuleBase,
   AuthCore,

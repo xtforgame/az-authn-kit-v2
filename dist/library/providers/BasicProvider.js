@@ -9,11 +9,11 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _class, _temp;
 
+var _azRestfulHelpers = require('az-restful-helpers');
+
 var _AuthProvider2 = require('./AuthProvider');
 
 var _AuthProvider3 = _interopRequireDefault(_AuthProvider2);
-
-var _azRestfulHelpers = require('az-restful-helpers');
 
 var _crypt = require('../utils/crypt');
 

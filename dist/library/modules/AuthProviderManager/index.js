@@ -37,7 +37,8 @@ var AuthProviderManager = (_temp = _class = function (_ModuleBase) {
     _this.providerMap = {};
     Object.keys(_this.supportedProviders).forEach(function (key) {
       var supportedProvider = _this.supportedProviders[key];
-      _this.providerMap[key] = new supportedProvider.provider(_this.accountLinkStore);
+      var Provider = supportedProvider.provider;
+      _this.providerMap[key] = new Provider(_this.accountLinkStore);
     });
     _this.options = options;
     return _this;

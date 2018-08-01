@@ -10,15 +10,6 @@ var _class, _temp;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var privateData = new WeakMap();
-
-var Session = function Session(info, token) {
-  _classCallCheck(this, Session);
-
-  this.info = info;
-  this.token = token;
-};
-
 var ModuleBase = (_temp = _class = function () {
   function ModuleBase() {
     _classCallCheck(this, ModuleBase);
