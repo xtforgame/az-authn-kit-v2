@@ -81,6 +81,12 @@ export default class KoaHelper extends ModuleBase {
           info.access_token = provider_user_access_info.access_token;
         }
 
+        ctx.local = ctx.local || {};
+        ctx.local.authData = {
+          account,
+          sessionInfo: info,
+        };
+
         return (ctx.body = info);
       })
       .catch((error) => {

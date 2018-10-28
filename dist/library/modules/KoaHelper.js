@@ -66,6 +66,12 @@ var KoaHelper = (_temp = _class = function (_ModuleBase) {
           info.access_token = provider_user_access_info.access_token;
         }
 
+        ctx.local = ctx.local || {};
+        ctx.local.authData = {
+          account: account,
+          sessionInfo: info
+        };
+
         return ctx.body = info;
       }).catch(function (error) {
         if (error.status === 401) {
