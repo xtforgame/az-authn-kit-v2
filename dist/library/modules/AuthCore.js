@@ -40,19 +40,23 @@ var AuthCore = (_temp = _class = function (_ModuleBase) {
     var _this = _possibleConstructorReturn(this, (AuthCore.__proto__ || Object.getPrototypeOf(AuthCore)).call(this));
 
     _this.decodeToken = function (token) {
+      var handleError = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function () {};
+
       try {
         return _this.jwtSessionHelper.decode(token);
       } catch (e) {
-        console.warn('e :', e);
+        handleError(e);
       }
       return null;
     };
 
     _this.verifyToken = function (token) {
+      var handleError = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function () {};
+
       try {
         return _this.jwtSessionHelper.verify(token);
       } catch (e) {
-        console.warn('e :', e);
+        handleError(e);
       }
       return null;
     };
@@ -108,6 +112,10 @@ var AuthCore = (_temp = _class = function (_ModuleBase) {
   _createClass(AuthCore, [{
     key: 'verifyAuthorization',
     value: function verifyAuthorization(headers) {
+      var handleError = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function (e) {
+        return console.warn('e :', e);
+      };
+
       var authorization = headers;
       if (typeof headers !== 'string') {
         authorization = headers.authorization;
@@ -123,7 +131,7 @@ var AuthCore = (_temp = _class = function (_ModuleBase) {
 
       var token = authorization.substr(tokenStartPos + 1, authorization.length - tokenStartPos - 1);
 
-      return token && this.verifyToken(token);
+      return token && this.verifyToken(token, handleError);
     }
   }, {
     key: 'createSession',

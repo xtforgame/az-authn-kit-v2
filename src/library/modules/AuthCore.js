@@ -55,27 +55,27 @@ export default class AuthCore extends ModuleBase {
 
   // =====================================================
 
-  decodeToken = (token) => {
+  decodeToken = (token, handleError = () => {}) => {
     try {
       return this.jwtSessionHelper.decode(token);
     } catch (e) {
-      console.warn('e :', e);
+      handleError(e);
     }
     return null;
   };
 
-  verifyToken = (token) => {
+  verifyToken = (token, handleError = () => {}) => {
     try {
       return this.jwtSessionHelper.verify(token);
     } catch (e) {
-      console.warn('e :', e);
+      handleError(e);
     }
     return null;
   };
 
   signToken = token => this.jwtSessionHelper.sign(token);
 
-  verifyAuthorization(headers) {
+  verifyAuthorization(headers, handleError = e => console.warn('e :', e)) {
     let authorization = headers;
     if (typeof headers !== 'string') {
       ({ authorization } = headers);
@@ -92,7 +92,7 @@ export default class AuthCore extends ModuleBase {
     const token = authorization
     .substr(tokenStartPos + 1, authorization.length - tokenStartPos - 1);
 
-    return token && this.verifyToken(token);
+    return token && this.verifyToken(token, handleError);
   }
 
   // =====================================================
