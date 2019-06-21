@@ -3,15 +3,9 @@
 import { RestfulError } from 'az-restful-helpers';
 import ModuleBase from '../ModuleBase';
 
+import AccountLinkStore from '~/AccountLinkStore';
 import getAuthAsuModelDefs from './getAuthAsuModelDefs';
 import normalizeModelsOption from './normalizeModelsOption';
-
-export class AccountLinkStore {
-  constructor(findAccountLink, createAccountLink) {
-    this.findAccountLink = findAccountLink;
-    this.createAccountLink = createAccountLink;
-  }
-}
 
 export default class SequelizeStore extends ModuleBase {
   static $name = 'sequelizeStore';

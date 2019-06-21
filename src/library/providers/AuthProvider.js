@@ -1,5 +1,5 @@
 import { RestfulError } from 'az-restful-helpers';
-import checkParams from '../checkParams';
+import checkParams from '~/utils/checkParams';
 
 export default class AuthProvider {
   constructor(accountLinkStore) {
