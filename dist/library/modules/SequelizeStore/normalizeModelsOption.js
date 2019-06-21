@@ -1,61 +1,63 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports["default"] = void 0;
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+var _sequelize = _interopRequireDefault(require("sequelize"));
 
-var _sequelize = require('sequelize');
+var _azSequelizeUtils = _interopRequireDefault(require("az-sequelize-utils"));
 
-var _sequelize2 = _interopRequireDefault(_sequelize);
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-var _azSequelizeUtils = require('az-sequelize-utils');
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
 
-var _azSequelizeUtils2 = _interopRequireDefault(_azSequelizeUtils);
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
 
-exports.default = function () {
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
+var _default = function _default() {
   var modelsOption = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
   var _modelsOption$user = modelsOption.user;
-  _modelsOption$user = _modelsOption$user === undefined ? {} : _modelsOption$user;
+  _modelsOption$user = _modelsOption$user === void 0 ? {} : _modelsOption$user;
   var _modelsOption$user$pu = _modelsOption$user.publicColumns,
-      userPublicColumns = _modelsOption$user$pu === undefined ? [] : _modelsOption$user$pu,
+      userPublicColumns = _modelsOption$user$pu === void 0 ? [] : _modelsOption$user$pu,
       _modelsOption$user$co = _modelsOption$user.columns,
-      userColumns = _modelsOption$user$co === undefined ? {} : _modelsOption$user$co,
+      userColumns = _modelsOption$user$co === void 0 ? {} : _modelsOption$user$co,
       _modelsOption$account = modelsOption.accountLink;
-  _modelsOption$account = _modelsOption$account === undefined ? {} : _modelsOption$account;
+  _modelsOption$account = _modelsOption$account === void 0 ? {} : _modelsOption$account;
   var _modelsOption$account2 = _modelsOption$account.publicColumns,
-      accountLinkPublicColumns = _modelsOption$account2 === undefined ? [] : _modelsOption$account2,
+      accountLinkPublicColumns = _modelsOption$account2 === void 0 ? [] : _modelsOption$account2,
       _modelsOption$account3 = _modelsOption$account.columns,
-      accountLinkColumns = _modelsOption$account3 === undefined ? {} : _modelsOption$account3;
-
-
+      accountLinkColumns = _modelsOption$account3 === void 0 ? {} : _modelsOption$account3;
   return {
     user: {
       publicColumns: Array.from(new Set(['id', 'name', 'privilege', 'labels'].concat(_toConsumableArray(userPublicColumns)))),
-      columns: _extends({
+      columns: _objectSpread({
         id: {
-          type: _sequelize2.default.BIGINT.UNSIGNED,
+          type: _sequelize["default"].BIGINT.UNSIGNED,
           primaryKey: true,
           autoIncrement: true,
           comment: 'PrimaryKey'
         },
         name: {
-          type: _sequelize2.default.STRING,
-
+          type: _sequelize["default"].STRING,
           comment: 'Username'
         },
-        privilege: _sequelize2.default.STRING,
+        privilege: _sequelize["default"].STRING,
         labels: {
-          type: _sequelize2.default.JSONB,
+          type: _sequelize["default"].JSONB,
           defaultValue: {}
         },
         accountLinks: {
-          type: _azSequelizeUtils2.default.HAS_MANY('accountLink', {
+          type: _azSequelizeUtils["default"].HAS_MANY('accountLink', {
             foreignKey: 'user_id'
           })
         }
@@ -63,24 +65,24 @@ exports.default = function () {
     },
     accountLink: {
       publicColumns: Array.from(new Set(['id', 'provider_id', 'provider_user_id'].concat(_toConsumableArray(accountLinkPublicColumns)))),
-      columns: _extends({
+      columns: _objectSpread({
         id: {
-          type: _sequelize2.default.BIGINT.UNSIGNED,
+          type: _sequelize["default"].BIGINT.UNSIGNED,
           primaryKey: true,
           autoIncrement: true,
           comment: 'PrimaryKey'
         },
         provider_id: {
-          type: _sequelize2.default.STRING
+          type: _sequelize["default"].STRING
         },
         provider_user_id: {
-          type: _sequelize2.default.STRING
+          type: _sequelize["default"].STRING
         },
         provider_user_access_info: {
-          type: _sequelize2.default.JSONB
+          type: _sequelize["default"].JSONB
         },
         user: {
-          type: _azSequelizeUtils2.default.BELONGS_TO('user', {
+          type: _azSequelizeUtils["default"].BELONGS_TO('user', {
             foreignKey: 'user_id'
           })
         }
@@ -88,3 +90,5 @@ exports.default = function () {
     }
   };
 };
+
+exports["default"] = _default;

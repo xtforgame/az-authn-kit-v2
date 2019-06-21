@@ -1,10 +1,11 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports["default"] = void 0;
 
-exports.default = function (_ref) {
+var _default = function _default(_ref) {
   var _ref$user = _ref.user,
       userPublicColumns = _ref$user.publicColumns,
       userColumns = _ref$user.columns,
@@ -29,7 +30,6 @@ exports.default = function (_ref) {
             singular: 'accountLink',
             plural: 'accountLinks'
           },
-
           indexes: [{
             unique: true,
             fields: ['user_id', 'provider_id'],
@@ -48,3 +48,5 @@ exports.default = function (_ref) {
     }
   };
 };
+
+exports["default"] = _default;

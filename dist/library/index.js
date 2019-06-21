@@ -1,48 +1,77 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.crypt = exports.sha512gen_salt = exports.BasicProvider = exports.AuthProvider = exports.KoaHelper = exports.AuthProviderManager = exports.SequelizeStore = exports.AuthCore = exports.ModuleBase = undefined;
+Object.defineProperty(exports, "ModuleBase", {
+  enumerable: true,
+  get: function get() {
+    return _ModuleBase["default"];
+  }
+});
+Object.defineProperty(exports, "AuthCore", {
+  enumerable: true,
+  get: function get() {
+    return _AuthCore["default"];
+  }
+});
+Object.defineProperty(exports, "SequelizeStore", {
+  enumerable: true,
+  get: function get() {
+    return _SequelizeStore["default"];
+  }
+});
+Object.defineProperty(exports, "AuthProviderManager", {
+  enumerable: true,
+  get: function get() {
+    return _AuthProviderManager["default"];
+  }
+});
+Object.defineProperty(exports, "KoaHelper", {
+  enumerable: true,
+  get: function get() {
+    return _KoaHelper["default"];
+  }
+});
+Object.defineProperty(exports, "AuthProvider", {
+  enumerable: true,
+  get: function get() {
+    return _AuthProvider["default"];
+  }
+});
+Object.defineProperty(exports, "BasicProvider", {
+  enumerable: true,
+  get: function get() {
+    return _BasicProvider["default"];
+  }
+});
+Object.defineProperty(exports, "sha512gen_salt", {
+  enumerable: true,
+  get: function get() {
+    return _crypt.sha512gen_salt;
+  }
+});
+Object.defineProperty(exports, "crypt", {
+  enumerable: true,
+  get: function get() {
+    return _crypt.crypt;
+  }
+});
 
-var _ModuleBase = require('./modules/ModuleBase');
+var _ModuleBase = _interopRequireDefault(require("./modules/ModuleBase"));
 
-var _ModuleBase2 = _interopRequireDefault(_ModuleBase);
+var _AuthCore = _interopRequireDefault(require("./modules/AuthCore"));
 
-var _AuthCore = require('./modules/AuthCore');
+var _SequelizeStore = _interopRequireDefault(require("./modules/SequelizeStore"));
 
-var _AuthCore2 = _interopRequireDefault(_AuthCore);
+var _AuthProviderManager = _interopRequireDefault(require("./modules/AuthProviderManager"));
 
-var _SequelizeStore = require('./modules/SequelizeStore');
+var _KoaHelper = _interopRequireDefault(require("./modules/KoaHelper"));
 
-var _SequelizeStore2 = _interopRequireDefault(_SequelizeStore);
+var _AuthProvider = _interopRequireDefault(require("./providers/AuthProvider"));
 
-var _AuthProviderManager = require('./modules/AuthProviderManager');
+var _BasicProvider = _interopRequireDefault(require("./providers/BasicProvider"));
 
-var _AuthProviderManager2 = _interopRequireDefault(_AuthProviderManager);
+var _crypt = require("./utils/crypt");
 
-var _KoaHelper = require('./modules/KoaHelper');
-
-var _KoaHelper2 = _interopRequireDefault(_KoaHelper);
-
-var _AuthProvider = require('./providers/AuthProvider');
-
-var _AuthProvider2 = _interopRequireDefault(_AuthProvider);
-
-var _BasicProvider = require('./providers/BasicProvider');
-
-var _BasicProvider2 = _interopRequireDefault(_BasicProvider);
-
-var _crypt = require('./utils/crypt');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.ModuleBase = _ModuleBase2.default;
-exports.AuthCore = _AuthCore2.default;
-exports.SequelizeStore = _SequelizeStore2.default;
-exports.AuthProviderManager = _AuthProviderManager2.default;
-exports.KoaHelper = _KoaHelper2.default;
-exports.AuthProvider = _AuthProvider2.default;
-exports.BasicProvider = _BasicProvider2.default;
-exports.sha512gen_salt = _crypt.sha512gen_salt;
-exports.crypt = _crypt.crypt;
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }

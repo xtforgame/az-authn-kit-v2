@@ -1,6 +1,6 @@
-# AzAuthnKit
+# AzDevBase
 
-An authentication kit
+A general purpose seed project base
 
 Run `npm install`
 
