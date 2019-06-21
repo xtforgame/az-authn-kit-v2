@@ -10,17 +10,16 @@ export default class KoaHelper extends ModuleBase {
 
   static $type = 'service';
 
-  static $inject = ['authCore', 'sequelizeStore', 'authProviderManager'];
+  static $inject = ['authCore', 'authProviderManager'];
 
   static $funcDeps = {
     init: [],
     start: [],
   };
 
-  constructor(authCore, sequelizeStore, authProviderManager) {
+  constructor(authCore, authProviderManager) {
     super();
     this.authCore = authCore;
-    this.sequelizeStore = sequelizeStore;
     this.authProviderManager = authProviderManager;
   }
 

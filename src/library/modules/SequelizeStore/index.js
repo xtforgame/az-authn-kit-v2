@@ -18,16 +18,13 @@ export default class SequelizeStore extends ModuleBase {
 
   static $type = 'service';
 
-  static $inject = ['authCore'];
-
   static $funcDeps = {
     init: [],
     start: [],
   };
 
-  constructor(authCore, options) {
+  constructor(options) {
     super();
-    this.authCore = authCore;
     this.options = options;
     this.modelsOption = normalizeModelsOption(options.models);
   }
