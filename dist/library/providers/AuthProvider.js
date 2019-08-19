@@ -7,7 +7,7 @@ exports["default"] = void 0;
 
 var _azRestfulHelpers = require("az-restful-helpers");
 
-var _checkParams = _interopRequireDefault(require("../checkParams"));
+var _checkParams = _interopRequireDefault(require("../utils/checkParams"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 

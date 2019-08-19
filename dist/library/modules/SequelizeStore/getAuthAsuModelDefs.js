@@ -31,8 +31,9 @@ var _default = function _default(_ref) {
             plural: 'accountLinks'
           },
           indexes: [{
+            name: 'provider_user_id_should_be_unique',
             unique: true,
-            fields: ['user_id', 'provider_id'],
+            fields: ['user_id', 'provider_id', 'provider_user_id'],
             where: {
               deleted_at: null
             }
