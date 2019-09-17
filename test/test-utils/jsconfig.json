@@ -3,10 +3,10 @@
     "baseUrl": "../../",
     "paths": {
       "~/*": ["./test/test-utils/*"],
-      "library": ["src/library"],
-      "library/*": ["src/library/*"],
+      "library": ["./src/library"],
+      "library/*": ["./src/library/*"],
       "test-data": ["./test/test-data"],
       "test-data/*": ["./test/test-data/*"]
-    },
+    }
   }
 }

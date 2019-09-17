@@ -1,6 +1,7 @@
 {
   "presets": ["@babel/preset-env", "@babel/typescript"],
   "plugins": [
+    ["@babel/proposal-decorators", { "decoratorsBeforeExport": true }],
     "@babel/proposal-class-properties",
     "@babel/proposal-object-rest-spread"
   ],
@@ -10,10 +11,10 @@
         ["module-resolver", {
           "extensions": [".js", ".ts"],
           "alias": {
-            "~": "./src/test/library",
+            "~": "./test/library",
             "library": "./src/library",
-            "test-utils": "./src/test-utils",
-            "test-data": "./src/test-data"
+            "test-utils": "./test/test-utils",
+            "test-data": "./test/test-data"
           }
         }]
       ]
@@ -23,10 +24,10 @@
         ["module-resolver", {
           "extensions": [".js", ".ts"],
           "alias": {
-            "~": "./src/test/library",
+            "~": "./test/library",
             "library": "./src/library",
-            "test-utils": "./src/test-utils",
-            "test-data": "./src/test-data"
+            "test-utils": "./test/test-utils",
+            "test-data": "./test/test-data"
           }
         }]
       ]
@@ -36,10 +37,10 @@
         ["module-resolver", {
           "extensions": [".js", ".ts"],
           "alias": {
-            "~": "./src/test/library",
+            "~": "./test/library",
             "library": "./src/library",
-            "test-utils": "./src/test-utils",
-            "test-data": "./src/test-data"
+            "test-utils": "./test/test-utils",
+            "test-data": "./test/test-data"
           }
         }]
       ]

@@ -9,9 +9,10 @@
         "forceAllTransforms": true
       }
     ],
-    "@babel/typescript",
+    "@babel/typescript"
   ],
   "plugins": [
+    ["@babel/proposal-decorators", { "decoratorsBeforeExport": true }],
     "@babel/proposal-class-properties",
     "@babel/proposal-object-rest-spread"
   ],
