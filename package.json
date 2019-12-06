@@ -1,6 +1,6 @@
 {
   "name": "az-authn-kit",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "An authentication kit",
   "main": "dist/library/index.js",
   "repository": {

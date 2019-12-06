@@ -20,7 +20,12 @@ export default class AuthCore extends ModuleBase {
       algorithm = 'HS256',
       issuer = 'localhost',
       expiresIn = '1y',
+      acceptedIssuers,
     } = options;
+    this.acceptedIssuers = acceptedIssuers;
+    if (!this.acceptedIssuers) {
+      this.acceptedIssuers = [issuer];
+    }
     this.jwtSessionHelper = options.jwtSessionHelper || new JwtSessionHelper(secret, {
       defaults: {
         algorithm,
@@ -66,7 +71,11 @@ export default class AuthCore extends ModuleBase {
 
   verifyToken = (token, handleError = () => {}) => {
     try {
-      return this.jwtSessionHelper.verify(token);
+      const result = this.jwtSessionHelper.verify(token);
+      if (!this.acceptedIssuers.includes(result.iss)) {
+        throw new Error(`Unaccepted issuer: ${result.iss}`);
+      }
+      return result;
     } catch (e) {
       handleError(e);
     }
