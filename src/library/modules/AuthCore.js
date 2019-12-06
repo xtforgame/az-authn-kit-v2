@@ -98,7 +98,9 @@ export default class AuthCore extends ModuleBase {
   // =====================================================
 
   createSession(sessionData) {
-    return this.jwtSessionHelper.createSession(sessionData);
+    return this.jwtSessionHelper.createSession(sessionData, {
+      mutatePayload: true,
+    });
   }
 
   removeSession(token) {

@@ -149,7 +149,9 @@ var AuthCore = function (_ModuleBase) {
   }, {
     key: "createSession",
     value: function createSession(sessionData) {
-      return this.jwtSessionHelper.createSession(sessionData);
+      return this.jwtSessionHelper.createSession(sessionData, {
+        mutatePayload: true
+      });
     }
   }, {
     key: "removeSession",

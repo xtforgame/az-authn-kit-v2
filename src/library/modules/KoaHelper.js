@@ -75,18 +75,22 @@ export default class KoaHelper extends ModuleBase {
       .then((account) => {
         const { provider_user_access_info } = account;
         delete account.provider_user_access_info; // eslint-disable-line no-param-reassign
-        const { info } = this.authCore.createSession(account);
+        const { info: sessionInfo, payload: jwtPayload } = this.authCore.createSession(account);
         if (provider_user_access_info.access_token) {
-          info.access_token = provider_user_access_info.access_token;
+          sessionInfo.access_token = provider_user_access_info.access_token;
         }
 
         ctx.local = ctx.local || {};
         ctx.local.authData = {
           account,
-          sessionInfo: info,
+          jwtPayload,
+          sessionInfo,
         };
 
-        return (ctx.body = info);
+        return (ctx.body = {
+          ...sessionInfo,
+          jwtPayload,
+        });
       })
       .catch((error) => {
         if (error.status === 401) {
