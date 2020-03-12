@@ -3,47 +3,17 @@ import chai from 'chai';
 
 import path from 'path';
 import fs from 'fs';
-import Azldi from 'azldi';
-import {
-  AuthCore,
-} from '../../src/library';
+import { AuthCore } from 'library';
 
 const { expect } = chai;
 
 describe('AuthCore', () => {
   describe('Basic', () => {
     const key = fs.readFileSync(path.join(__dirname, '../self-signed/privatekey.pem'), 'utf8');
-    const Classes = [
-      AuthCore,
-    ];
-    const digestOrder = [
-      AuthCore,
-    ];
 
     let authCore = null;
     beforeEach(() => {
-      const azldi = new Azldi();
-
-      azldi.register(Classes);
-
-      Classes.forEach((Class) => {
-        const classInfo = azldi.getClassInfo(Class.$name);
-        // console.log('classInfo :', classInfo);
-      });
-
-      let digestIndex = 0;
-
-      const results = azldi.digest({
-        onCreate: (obj) => {
-          digestIndex++;
-        },
-        appendArgs: {
-          authCore: [key, {}],
-        },
-      });
-
-      [authCore] = results;
-
+      authCore = new AuthCore(key, {});
       return true;
     });
 

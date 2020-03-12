@@ -4,12 +4,14 @@ import chai from 'chai';
 import path from 'path';
 import fs from 'fs';
 
-import Azldi from 'azldi';
 import { RestfulError } from 'az-restful-helpers';
 
 import Sequelize from 'sequelize';
 
 import AsuOrm from 'az-sequelize-utils';
+
+import SequelizeStore from 'test-utils/SequelizeStore';
+
 import {
   postgresPort,
   postgresUser,
@@ -18,17 +20,16 @@ import {
   postgresHost,
   getConnectString,
   resetTestDbAndTestRole,
-} from '../test-utils/sequelize-helpers';
+} from 'test-utils/sequelize-helpers';
 
 // =================
 
 import {
   AuthCore,
-  SequelizeStore,
   AuthProviderManager,
   KoaHelper,
   BasicProvider,
-} from '../../src/library';
+} from 'library';
 import createTestData from '../test-data/createTestData';
 
 const logFiles = {};
@@ -41,8 +42,6 @@ const write = (file, data) => {
 function logger(...args) { // eslint-disable-line no-unused-vars
   write(path.resolve(__dirname, './KoaHelper.spec.log'), `${args[0]}\n`);
 }
-
-const secret = fs.readFileSync(path.join(__dirname, '../self-signed/privatekey.pem'), 'utf8');
 
 class AzRdbmsMgr {
   constructor(asuModelDefs, { databaseLogger = (() => {}) }) {
@@ -90,65 +89,23 @@ const { expect } = chai;
 describe('KoaHelper', () => {
   describe('Basic', () => {
     const key = fs.readFileSync(path.join(__dirname, '../self-signed/privatekey.pem'), 'utf8');
-    // let AuthCore = AuthCore(key, {});
-    // let SequelizeStore = SequelizeStore({});
-    // let AuthProviderManager = AuthProviderManager({
-    //   basic: {
-    //     provider: BasicProvider,
-    //   },
-    // }, {});
-    const Classes = [
-      KoaHelper,
-      AuthProviderManager,
-      SequelizeStore,
-      AuthCore,
-    ];
-    const digestOrder = [
-      AuthCore,
-      SequelizeStore,
-      AuthProviderManager,
-      KoaHelper,
-    ];
 
-    let azldi = null;
     let authCore = null;
     let authProviderManager = null;
     let sequelizeStore = null;
     let koaHelper = null;
     beforeEach(() => {
-      azldi = new Azldi();
-
-      azldi.register(Classes);
-
-      Classes.forEach((Class) => {
-        const classInfo = azldi.getClassInfo(Class.$name);
-        // console.log('classInfo :', classInfo);
-      });
-
-      let digestIndex = 0;
-
-      const results = azldi.digest({
-        onCreate: (obj) => {
-          digestIndex++;
+      authCore = new AuthCore(key, {});
+      sequelizeStore = new SequelizeStore({});
+      authProviderManager = new AuthProviderManager(
+        {
+          basic: {
+            provider: BasicProvider,
+          },
         },
-        appendArgs: {
-          authCore: [key, {}],
-          sequelizeStore: [{}],
-          authProviderManager: [
-            {
-              basic: {
-                provider: BasicProvider,
-              },
-            },
-            {},
-          ],
-        },
-      });
-
-      authCore = azldi.get('authCore');
-      authProviderManager = azldi.get('authProviderManager');
-      sequelizeStore = azldi.get('sequelizeStore');
-      koaHelper = azldi.get('koaHelper');
+        {}
+      );
+      koaHelper = new KoaHelper(authCore, authProviderManager);
 
       return resetTestDbAndTestRole();
     });
@@ -159,11 +116,10 @@ describe('KoaHelper', () => {
       });
       return azRdbmsMgr.sync()
         .then(() => createTestData(azRdbmsMgr.resourceManager, false))
-        .then(() => azldi.runAsync('init', [], {
-          appendArgs: {
-            sequelizeStore: [azRdbmsMgr.resourceManager],
-          },
-        }))
+        .then(() => Promise.all([
+          sequelizeStore.setResourceManager(azRdbmsMgr.resourceManager),
+          authProviderManager.setAccountLinkStore(sequelizeStore.getAccountLinkStore()),
+        ]))
         .then(() => azRdbmsMgr);
     };
 

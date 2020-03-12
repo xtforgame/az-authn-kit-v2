@@ -4,11 +4,17 @@ import chai from 'chai';
 import path from 'path';
 import fs from 'fs';
 
-import Azldi from 'azldi';
-
 import Sequelize from 'sequelize';
 
 import AsuOrm from 'az-sequelize-utils';
+
+import {
+  AuthProviderManager,
+  BasicProvider,
+} from 'library';
+
+import SequelizeStore from 'test-utils/SequelizeStore';
+
 import {
   postgresPort,
   postgresUser,
@@ -17,17 +23,10 @@ import {
   postgresHost,
   getConnectString,
   resetTestDbAndTestRole,
-} from '../test-utils/sequelize-helpers';
+} from 'test-utils/sequelize-helpers';
 
 // =================
-
-import {
-  AuthCore,
-  SequelizeStore,
-  AuthProviderManager,
-  BasicProvider,
-} from '../../src/library';
-import createTestData from '../test-data/createTestData';
+import createTestData from 'test-data/createTestData';
 
 const logFiles = {};
 
@@ -39,8 +38,6 @@ const write = (file, data) => {
 function logger(...args) { // eslint-disable-line no-unused-vars
   write(path.resolve(__dirname, './AuthProviderManager.spec.log'), `${args[0]}\n`);
 }
-
-const secret = fs.readFileSync(path.join(__dirname, '../self-signed/privatekey.pem'), 'utf8');
 
 class AzRdbmsMgr {
   constructor(asuModelDefs, { databaseLogger = (() => {}) }) {
@@ -65,58 +62,18 @@ const { expect } = chai;
 
 describe('AuthProviderManager', () => {
   describe('Basic', () => {
-    const key = fs.readFileSync(path.join(__dirname, '../self-signed/privatekey.pem'), 'utf8');
-    // let AuthCore = AuthCore(key, {});
-    // let SequelizeStore = SequelizeStore({});
-    // let AuthProviderManager = AuthProviderManager({
-    //   basic: {
-    //     provider: BasicProvider,
-    //   },
-    // }, {});
-    const Classes = [
-      AuthProviderManager,
-      SequelizeStore,
-      AuthCore,
-    ];
-    const digestOrder = [
-      AuthCore,
-      SequelizeStore,
-      AuthProviderManager,
-    ];
-
-    let azldi = null;
     let authProviderManager = null;
     let sequelizeStore = null;
     beforeEach(() => {
-      azldi = new Azldi();
-
-      azldi.register(Classes);
-
-      Classes.forEach((/* Class */) => {
-        // const classInfo = azldi.getClassInfo(Class.$name);
-        // console.log('classInfo :', classInfo);
-      });
-
-      let digestIndex = 0;
-      const results = azldi.digest({
-        onCreate: (/* obj */) => {
-          digestIndex++;
+      sequelizeStore = new SequelizeStore({});
+      authProviderManager = new AuthProviderManager(
+        {
+          basic: {
+            provider: BasicProvider,
+          },
         },
-        appendArgs: {
-          authCore: [key, {}],
-          sequelizeStore: [{}],
-          authProviderManager: [
-            {
-              basic: {
-                provider: BasicProvider,
-              },
-            },
-            {},
-          ],
-        },
-      });
-
-      [authProviderManager, sequelizeStore] = results;
+        {}
+      );
 
       return resetTestDbAndTestRole();
     });
@@ -128,11 +85,10 @@ describe('AuthProviderManager', () => {
       });
       return azRdbmsMgr.sync()
         .then(() => createTestData(azRdbmsMgr.resourceManager, false))
-        .then(() => azldi.runAsync('init', [], {
-          appendArgs: {
-            sequelizeStore: [azRdbmsMgr.resourceManager],
-          },
-        }))
+        .then(() => Promise.all([
+          sequelizeStore.setResourceManager(azRdbmsMgr.resourceManager),
+          authProviderManager.setAccountLinkStore(sequelizeStore.getAccountLinkStore()),
+        ]))
         .then(() => authProviderManager.getAuthProvider('basic'))
         .then(basicAuthProvider => basicAuthProvider.authenticate({
           username: 'admin',
