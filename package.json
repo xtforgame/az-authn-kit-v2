@@ -1,7 +1,7 @@
 {
-  "name": "az-dev-base",
-  "version": "1.0.0",
-  "description": "A general purpose seed project base",
+  "name": "az-authn-kit-v2",
+  "version": "0.1.2",
+  "description": "An authentication kit",
   "main": "dist/library/index.js",
   "repository": {
     "type": "git"
@@ -23,7 +23,9 @@
     "build": "cross-env NODE_ENV=production gulp library:build",
     "start": "cross-env NODE_ENV=development gulp library:watch:dev",
     "test": "eslint --ext .js ./test/library && cross-env NODE_ENV=test mocha --require ./test/babel-register.js './test/library/**/*.spec.js'",
-    "test-watch": "eslint --ext .js ./test/library && cross-env NODE_ENV=test mocha --watch ./test --watch-extensions js,ts --require ./test/babel-register.js './test/library/**/*.spec.js'"
+    "test-watch": "eslint --ext .js ./test/library && cross-env NODE_ENV=test mocha --watch ./test --watch-extensions js,ts --require ./test/babel-register.js './test/library/**/*.spec.js'",
+    "start-db": "docker-compose -f docker-compose.yml up -d",
+    "stop-db": "docker-compose -f docker-compose.yml down"
   },
   "license": "MIT",
   "dependencies": {},
@@ -37,7 +39,11 @@
     "@babel/preset-typescript": "^7.3.3",
     "@babel/register": "^7.4.0",
     "@types/node": "^12.7.5",
+    "axios": "^0.18.1",
+    "azldi": "git+https://github.com/xtforgame/azldi.git#v0.1.0",
     "az-gulp-env-lite": "git+https://github.com/xtforgame/az-gulp-env-lite.git#v2.0.0-alpha.1",
+    "az-restful-helpers": "git+https://github.com/xtforgame/az-restful-helpers.git#v0.1.0",
+    "az-sequelize-utils": "git+https://github.com/xtforgame/az-sequelize-utils.git#v0.1.0",
     "babel-eslint": "^8.2.6",
     "babel-plugin-module-resolver": "^3.1.1",
     "chai": "^3.5.0",
@@ -47,7 +53,9 @@
     "eslint-plugin-import": "^2.12.0",
     "gulp-typescript": "^5.0.1",
     "mocha": "^5.2.0",
+    "pg": "^7.4.0",
     "rimraf": "^2.5.4",
+    "sequelize": "^4.26.0",
     "sinon": "^4.3.0",
     "tslint": "^5.16.0",
     "tslint-config-airbnb": "^5.11.1",
