@@ -28,7 +28,13 @@
     "stop-db": "docker-compose -f docker-compose.yml down"
   },
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "jwt-session-helper": "git+https://github.com/xtforgame/jwt-session-helper.git#v0.1.0",
+    "sha512crypt-node": "^0.1.0"
+  },
+  "peerDependencies": {
+    "az-restful-helpers": "*"
+  },
   "devDependencies": {
     "@babel/core": "^7.4.0",
     "@babel/plugin-proposal-class-properties": "^7.4.0",

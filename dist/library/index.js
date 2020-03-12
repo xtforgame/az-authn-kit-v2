@@ -58,6 +58,8 @@ Object.defineProperty(exports, "crypt", {
   }
 });
 
+require("@babel/polyfill");
+
 var _ModuleBase = _interopRequireDefault(require("./modules/ModuleBase"));
 
 var _AuthCore = _interopRequireDefault(require("./modules/AuthCore"));
