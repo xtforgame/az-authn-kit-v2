@@ -15,7 +15,6 @@ import {
 
 export {
   // modules
-  ModuleBase,
   AuthCore,
   SequelizeStore,
   AuthProviderManager,
