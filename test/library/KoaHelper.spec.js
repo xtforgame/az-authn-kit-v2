@@ -161,6 +161,7 @@ describe('KoaHelper', () => {
         .then(() => createTestData(azRdbmsMgr.resourceManager, false))
         .then(() => azldi.runAsync('init', [], {
           appendArgs: {
+            authProviderManager: [sequelizeStore.getAccountLinkStore()],
             sequelizeStore: [azRdbmsMgr.resourceManager],
           },
         }))

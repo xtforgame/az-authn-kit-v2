@@ -7,25 +7,28 @@ export default class AuthProviderManager extends ModuleBase {
 
   static $type = 'service';
 
-  static $inject = ['sequelizeStore'];
+  static $inject = [];
 
   static $funcDeps = {
     init: [],
     start: [],
   };
 
-  constructor(sequelizeStore, supportedProviders, options) {
+  constructor(supportedProviders, options) {
     super();
-    this.accountLinkStore = sequelizeStore.getAccountLinkStore();
     this.supportedProviders = supportedProviders;
+    this.providerMap = {};
+    this.options = options;
+  }
 
+  onInit(_, accountLinkStore) {
+    this.accountLinkStore = accountLinkStore;
     this.providerMap = {};
     Object.keys(this.supportedProviders).forEach((key) => {
       const supportedProvider = this.supportedProviders[key];
       const Provider = supportedProvider.provider;
       this.providerMap[key] = new Provider(this.accountLinkStore);
     });
-    this.options = options;
   }
 
   getAuthProvider(authType) {
