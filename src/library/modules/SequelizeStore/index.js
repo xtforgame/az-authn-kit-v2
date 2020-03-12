@@ -12,7 +12,7 @@ export default class SequelizeStore {
     this.modelsOption = normalizeModelsOption(options.models);
   }
 
-  init(_, resourceManager) {
+  setResourceManager(resourceManager) {
     this.resourceManager = resourceManager;
   }
 

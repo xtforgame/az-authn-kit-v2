@@ -70,7 +70,7 @@ describe('SequelizeStore', () => {
       let user = null;
       return azRdbmsMgr.sync()
         .then(() => createTestData(azRdbmsMgr.resourceManager, false))
-        .then(() => sequelizeStore.init(null, azRdbmsMgr.resourceManager))
+        .then(() => sequelizeStore.setResourceManager(azRdbmsMgr.resourceManager))
         .then(() => sequelizeStore.findUserWithAccountLink(1))
         .then((_user) => {
           user = _user;

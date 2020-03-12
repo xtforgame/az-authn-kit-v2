@@ -8,7 +8,7 @@ export default class AuthProviderManager {
     this.options = options;
   }
 
-  init(_, accountLinkStore) {
+  setAccountLinkStore(accountLinkStore) {
     this.accountLinkStore = accountLinkStore;
     this.providerMap = {};
     Object.keys(this.supportedProviders).forEach((key) => {

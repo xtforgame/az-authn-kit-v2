@@ -85,8 +85,8 @@ describe('AuthProviderManager', () => {
       return azRdbmsMgr.sync()
         .then(() => createTestData(azRdbmsMgr.resourceManager, false))
         .then(() => Promise.all([
-          sequelizeStore.init(null, azRdbmsMgr.resourceManager),
-          authProviderManager.init(null, sequelizeStore.getAccountLinkStore()),
+          sequelizeStore.setResourceManager(azRdbmsMgr.resourceManager),
+          authProviderManager.setAccountLinkStore(sequelizeStore.getAccountLinkStore()),
         ]))
         .then(() => authProviderManager.getAuthProvider('basic'))
         .then(basicAuthProvider => basicAuthProvider.authenticate({
