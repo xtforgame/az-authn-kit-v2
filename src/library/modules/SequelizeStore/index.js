@@ -1,29 +1,18 @@
 /* eslint-disable no-underscore-dangle */
 // import Sequelize from 'sequelize';
 import { RestfulError } from 'az-restful-helpers';
-import ModuleBase from '../ModuleBase';
 
 import AccountLinkStore from '~/AccountLinkStore';
 import getAuthAsuModelDefs from './getAuthAsuModelDefs';
 import normalizeModelsOption from './normalizeModelsOption';
 
-export default class SequelizeStore extends ModuleBase {
-  static $name = 'sequelizeStore';
-
-  static $type = 'service';
-
-  static $funcDeps = {
-    init: [],
-    start: [],
-  };
-
+export default class SequelizeStore {
   constructor(options) {
-    super();
     this.options = options;
     this.modelsOption = normalizeModelsOption(options.models);
   }
 
-  onInit(_, resourceManager) {
+  init(_, resourceManager) {
     this.resourceManager = resourceManager;
   }
 

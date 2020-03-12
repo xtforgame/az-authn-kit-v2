@@ -3,22 +3,9 @@ import {
   RestfulResponse,
   RestfulError,
 } from 'az-restful-helpers';
-import ModuleBase from './ModuleBase';
 
-export default class KoaHelper extends ModuleBase {
-  static $name = 'koaHelper';
-
-  static $type = 'service';
-
-  static $inject = ['authCore', 'authProviderManager'];
-
-  static $funcDeps = {
-    init: [],
-    start: [],
-  };
-
+export default class KoaHelper {
   constructor(authCore, authProviderManager) {
-    super();
     this.authCore = authCore;
     this.authProviderManager = authProviderManager;
   }

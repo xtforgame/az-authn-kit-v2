@@ -1,27 +1,14 @@
 /* eslint-disable no-underscore-dangle */
 import { RestfulError } from 'az-restful-helpers';
-import ModuleBase from '../ModuleBase';
 
-export default class AuthProviderManager extends ModuleBase {
-  static $name = 'authProviderManager';
-
-  static $type = 'service';
-
-  static $inject = [];
-
-  static $funcDeps = {
-    init: [],
-    start: [],
-  };
-
+export default class AuthProviderManager {
   constructor(supportedProviders, options) {
-    super();
     this.supportedProviders = supportedProviders;
     this.providerMap = {};
     this.options = options;
   }
 
-  onInit(_, accountLinkStore) {
+  init(_, accountLinkStore) {
     this.accountLinkStore = accountLinkStore;
     this.providerMap = {};
     Object.keys(this.supportedProviders).forEach((key) => {

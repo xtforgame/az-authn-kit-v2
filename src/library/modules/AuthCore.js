@@ -1,21 +1,8 @@
 /* eslint-disable no-underscore-dangle */
 import JwtSessionHelper from 'jwt-session-helper';
-import ModuleBase from './ModuleBase';
 
-export default class AuthCore extends ModuleBase {
-  static $name = 'authCore';
-
-  static $type = 'service';
-
-  static $inject = [];
-
-  static $funcDeps = {
-    init: [],
-    start: [],
-  };
-
+export default class AuthCore {
   constructor(secret, options = {}) {
-    super();
     const {
       algorithm = 'HS256',
       issuer = 'localhost',
