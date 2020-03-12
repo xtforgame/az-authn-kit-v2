@@ -1,3 +1,3 @@
-import { AuthParams, RequiredAuthParams, OnCheckParamsFailFunction } from '../interfaces';
+import { ParamsBase, RequiredParamsBase, OnCheckParamsFailFunction } from '../interfaces';
 export declare function defaultOnFailToCheckReqParams(key: any): any;
-export default function checkParams(obj: AuthParams, _requiredParams: RequiredAuthParams, onFail?: OnCheckParamsFailFunction): null | Error;
+export default function checkParams(obj: ParamsBase, _requiredParams: RequiredParamsBase, onFail?: OnCheckParamsFailFunction): null | Error;

@@ -1,5 +1,5 @@
 import AccountLinkStore from './AccountLinkStore';
-import { CheckParamsFunction, AuthParams, RequiredAuthParams, ProviderId, ProviderUserId, AccountLink } from '../interfaces';
+import { CheckParamsFunction, AuthParams, RequiredAuthParams, AccountLinkParams, ProviderId, ProviderUserId, AccountLink, User } from '../interfaces';
 export default class AuthProvider {
     static requiredAuthParams: RequiredAuthParams;
     static providerId: ProviderId;
@@ -12,4 +12,6 @@ export default class AuthProvider {
     get providerUserId(): ProviderUserId;
     verifyAuthParams(authParams: AuthParams, accountLink: AccountLink): any;
     authenticate(authParams: AuthParams): Promise<any>;
+    getAccountLinkParamsForCreate(alParams: AccountLinkParams): AccountLinkParams;
+    createAccountLink(alParams: AccountLinkParams, user: User): any;
 }

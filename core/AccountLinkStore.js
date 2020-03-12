@@ -9,12 +9,15 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-var AccountLinkStore = function AccountLinkStore(findAccountLink) {
+var AccountLinkStore = function AccountLinkStore(findAccountLink, createAccountLink) {
   _classCallCheck(this, AccountLinkStore);
 
   _defineProperty(this, "findAccountLink", void 0);
 
+  _defineProperty(this, "createAccountLink", void 0);
+
   this.findAccountLink = findAccountLink;
+  this.createAccountLink = createAccountLink;
 };
 
 exports["default"] = AccountLinkStore;

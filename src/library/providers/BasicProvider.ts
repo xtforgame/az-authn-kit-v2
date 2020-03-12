@@ -5,11 +5,14 @@ import {
 
   AuthParams,
   RequiredAuthParams,
+
+  AccountLinkParams,
+
   ProviderId,
   ProviderUserId,
   AccountLink,
 } from '../interfaces';
-import { crypt } from '../utils/crypt';
+import { sha512gen_salt, crypt } from '../utils/crypt';
 
 export default class BasicProvider extends AuthProvider {
   static requiredAuthParams : RequiredAuthParams = ['username', 'password'];
@@ -25,5 +28,19 @@ export default class BasicProvider extends AuthProvider {
       return Promise.resolve(accountLink);
     }
     return RestfulError.rejectWith(401, 'Wrong credential');
+  }
+
+  getAccountLinkParamsForCreate(alParams : AccountLinkParams) {
+    const result = this.checkParams(alParams, ['username', 'password']);
+    if (result) {
+      return Promise.reject(result);
+    }
+    return Promise.resolve({
+      provider_id: this.providerId,
+      provider_user_id: alParams.username,
+      provider_user_access_info: {
+        password: crypt(alParams.password, sha512gen_salt()),
+      },
+    });
   }
 }

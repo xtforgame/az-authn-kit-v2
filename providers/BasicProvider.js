@@ -54,6 +54,23 @@ var BasicProvider = function (_AuthProvider) {
 
       return _azRestfulHelpers.RestfulError.rejectWith(401, 'Wrong credential');
     }
+  }, {
+    key: "getAccountLinkParamsForCreate",
+    value: function getAccountLinkParamsForCreate(alParams) {
+      var result = this.checkParams(alParams, ['username', 'password']);
+
+      if (result) {
+        return Promise.reject(result);
+      }
+
+      return Promise.resolve({
+        provider_id: this.providerId,
+        provider_user_id: alParams.username,
+        provider_user_access_info: {
+          password: (0, _crypt.crypt)(alParams.password, (0, _crypt.sha512gen_salt)())
+        }
+      });
+    }
   }]);
 
   return BasicProvider;

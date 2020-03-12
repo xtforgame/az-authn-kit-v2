@@ -5,9 +5,14 @@ import {
 
   AuthParams,
   RequiredAuthParams,
+
+  AccountLinkParams,
+  RequiredAccountLinkParams,
+
   ProviderId,
   ProviderUserId,
   AccountLink,
+  User,
 } from '../interfaces';
 import checkParams from '../utils/checkParams';
 
@@ -55,5 +60,18 @@ export default class AuthProvider {
         }
         return this.verifyAuthParams(authParams, account);
       });
+  }
+
+  getAccountLinkParamsForCreate(alParams : AccountLinkParams) : AccountLinkParams {
+    return RestfulError.rejectWith(501, 'this authentication method is not implemented');
+  }
+
+  createAccountLink(alParams : AccountLinkParams, user : User) {
+    const result = this.checkParams(alParams, this.requiredAuthParams);
+    if (result) {
+      return Promise.reject(result);
+    }
+    return this.getAccountLinkParamsForCreate(alParams)
+      .then(paramsForCreate => this.accountLinkStore.createAccountLink(paramsForCreate, user));
   }
 }

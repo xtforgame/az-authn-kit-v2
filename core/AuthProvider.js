@@ -57,6 +57,26 @@ var AuthProvider = function () {
       });
     }
   }, {
+    key: "getAccountLinkParamsForCreate",
+    value: function getAccountLinkParamsForCreate(alParams) {
+      return _azRestfulHelpers.RestfulError.rejectWith(501, 'this authentication method is not implemented');
+    }
+  }, {
+    key: "createAccountLink",
+    value: function createAccountLink(alParams, user) {
+      var _this2 = this;
+
+      var result = this.checkParams(alParams, this.requiredAuthParams);
+
+      if (result) {
+        return Promise.reject(result);
+      }
+
+      return this.getAccountLinkParamsForCreate(alParams).then(function (paramsForCreate) {
+        return _this2.accountLinkStore.createAccountLink(paramsForCreate, user);
+      });
+    }
+  }, {
     key: "requiredAuthParams",
     get: function get() {
       return this.constructor.requiredAuthParams;
