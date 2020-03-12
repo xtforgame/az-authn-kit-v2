@@ -7,7 +7,7 @@ exports["default"] = void 0;
 
 var _azRestfulHelpers = require("az-restful-helpers");
 
-var _AuthProvider2 = _interopRequireDefault(require("./AuthProvider"));
+var _AuthProvider2 = _interopRequireDefault(require("../core/AuthProvider"));
 
 var _crypt = require("../utils/crypt");
 
@@ -44,32 +44,15 @@ var BasicProvider = function (_AuthProvider) {
 
   _createClass(BasicProvider, [{
     key: "verifyAuthParams",
-    value: function verifyAuthParams(authParams, account) {
+    value: function verifyAuthParams(authParams, accountLink) {
       var password = authParams.password;
-      var cryptedPassword = account.provider_user_access_info && account.provider_user_access_info.password;
+      var cryptedPassword = accountLink.provider_user_access_info && accountLink.provider_user_access_info.password;
 
       if (cryptedPassword && (0, _crypt.crypt)(password, cryptedPassword) === cryptedPassword) {
-        return Promise.resolve(account);
+        return Promise.resolve(accountLink);
       }
 
       return _azRestfulHelpers.RestfulError.rejectWith(401, 'Wrong credential');
-    }
-  }, {
-    key: "getAlParamsForCreate",
-    value: function getAlParamsForCreate(alParams) {
-      var result = this.checkParams(alParams, ['username', 'password']);
-
-      if (result) {
-        return Promise.reject(result);
-      }
-
-      return Promise.resolve({
-        provider_id: this.providerId,
-        provider_user_id: alParams.username,
-        provider_user_access_info: {
-          password: (0, _crypt.crypt)(alParams.password, (0, _crypt.sha512gen_salt)())
-        }
-      });
     }
   }]);
 

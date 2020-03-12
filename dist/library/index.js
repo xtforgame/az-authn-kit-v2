@@ -3,12 +3,16 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-Object.defineProperty(exports, "ModuleBase", {
-  enumerable: true,
-  get: function get() {
-    return _ModuleBase["default"];
-  }
-});
+var _exportNames = {
+  AuthCore: true,
+  SequelizeStore: true,
+  AuthProviderManager: true,
+  KoaHelper: true,
+  AuthProvider: true,
+  BasicProvider: true,
+  sha512gen_salt: true,
+  crypt: true
+};
 Object.defineProperty(exports, "AuthCore", {
   enumerable: true,
   get: function get() {
@@ -60,8 +64,6 @@ Object.defineProperty(exports, "crypt", {
 
 require("@babel/polyfill");
 
-var _ModuleBase = _interopRequireDefault(require("./modules/ModuleBase"));
-
 var _AuthCore = _interopRequireDefault(require("./modules/AuthCore"));
 
 var _SequelizeStore = _interopRequireDefault(require("./modules/SequelizeStore"));
@@ -70,10 +72,23 @@ var _AuthProviderManager = _interopRequireDefault(require("./modules/AuthProvide
 
 var _KoaHelper = _interopRequireDefault(require("./modules/KoaHelper"));
 
-var _AuthProvider = _interopRequireDefault(require("./providers/AuthProvider"));
+var _AuthProvider = _interopRequireDefault(require("./core/AuthProvider"));
 
 var _BasicProvider = _interopRequireDefault(require("./providers/BasicProvider"));
 
 var _crypt = require("./utils/crypt");
+
+var _interfaces = require("./interfaces");
+
+Object.keys(_interfaces).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  if (Object.prototype.hasOwnProperty.call(_exportNames, key)) return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _interfaces[key];
+    }
+  });
+});
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }

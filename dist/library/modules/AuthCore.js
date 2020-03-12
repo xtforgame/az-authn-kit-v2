@@ -7,11 +7,7 @@ exports["default"] = void 0;
 
 var _jwtSessionHelper = _interopRequireDefault(require("jwt-session-helper"));
 
-var _ModuleBase2 = _interopRequireDefault(require("./ModuleBase"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
@@ -27,32 +23,26 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-var AuthCore = function (_ModuleBase) {
-  _inherits(AuthCore, _ModuleBase);
-
+var AuthCore = function () {
   function AuthCore(secret) {
-    var _this;
+    var _this = this;
 
     var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
     _classCallCheck(this, AuthCore);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(AuthCore).call(this));
+    _defineProperty(this, "acceptedIssuers", void 0);
 
-    _defineProperty(_assertThisInitialized(_this), "decodeToken", function (token) {
-      var handleError = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function () {};
+    _defineProperty(this, "jwtSessionHelper", void 0);
+
+    _defineProperty(this, "options", void 0);
+
+    _defineProperty(this, "Session", void 0);
+
+    _defineProperty(this, "decodeToken", function (token) {
+      var handleError = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function (e) {};
 
       try {
         return _this.jwtSessionHelper.decode(token);
@@ -63,8 +53,8 @@ var AuthCore = function (_ModuleBase) {
       return null;
     });
 
-    _defineProperty(_assertThisInitialized(_this), "verifyToken", function (token) {
-      var handleError = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function () {};
+    _defineProperty(this, "verifyToken", function (token) {
+      var handleError = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function (e) {};
 
       try {
         var result = _this.jwtSessionHelper.verify(token);
@@ -81,7 +71,7 @@ var AuthCore = function (_ModuleBase) {
       return null;
     });
 
-    _defineProperty(_assertThisInitialized(_this), "signToken", function (token) {
+    _defineProperty(this, "signToken", function (token) {
       return _this.jwtSessionHelper.sign(token);
     });
 
@@ -92,13 +82,15 @@ var AuthCore = function (_ModuleBase) {
         _options$expiresIn = options.expiresIn,
         expiresIn = _options$expiresIn === void 0 ? '1y' : _options$expiresIn,
         acceptedIssuers = options.acceptedIssuers;
-    _this.acceptedIssuers = acceptedIssuers;
+    this.acceptedIssuers = [];
 
-    if (!_this.acceptedIssuers) {
-      _this.acceptedIssuers = [issuer];
+    if (acceptedIssuers) {
+      this.acceptedIssuers = acceptedIssuers;
+    } else {
+      this.acceptedIssuers = [issuer];
     }
 
-    _this.jwtSessionHelper = options.jwtSessionHelper || new _jwtSessionHelper["default"](secret, {
+    this.jwtSessionHelper = options.jwtSessionHelper || new _jwtSessionHelper["default"](secret, {
       defaults: {
         algorithm: algorithm
       },
@@ -131,9 +123,8 @@ var AuthCore = function (_ModuleBase) {
         return result;
       }
     });
-    _this.Session = _this.jwtSessionHelper.Session;
-    _this.options = options;
-    return _this;
+    this.Session = this.jwtSessionHelper.Session;
+    this.options = options;
   }
 
   _createClass(AuthCore, [{
@@ -176,17 +167,6 @@ var AuthCore = function (_ModuleBase) {
   }]);
 
   return AuthCore;
-}(_ModuleBase2["default"]);
+}();
 
 exports["default"] = AuthCore;
-
-_defineProperty(AuthCore, "$name", 'authCore');
-
-_defineProperty(AuthCore, "$type", 'service');
-
-_defineProperty(AuthCore, "$inject", []);
-
-_defineProperty(AuthCore, "$funcDeps", {
-  init: [],
-  start: []
-});

@@ -1,34 +1,29 @@
 import { RestfulError } from 'az-restful-helpers';
-import AuthProvider from './AuthProvider';
-import { sha512gen_salt, crypt } from '../utils/crypt';
+import AuthProvider from '../core/AuthProvider';
+import {
+  CheckParamsFunction,
+
+  AuthParams,
+  RequiredAuthParams,
+  ProviderId,
+  ProviderUserId,
+  AccountLink,
+} from '../interfaces';
+import { crypt } from '../utils/crypt';
 
 export default class BasicProvider extends AuthProvider {
-  static requiredAuthParams = ['username', 'password'];
+  static requiredAuthParams : RequiredAuthParams = ['username', 'password'];
 
-  static providerId = 'basic';
+  static providerId : ProviderId = 'basic';
 
-  static providerUserIdName = 'username';
+  static providerUserIdName : ProviderUserId = 'username';
 
-  verifyAuthParams(authParams, account) {
+  verifyAuthParams(authParams : AuthParams, accountLink : AccountLink) {
     const { password } = authParams;
-    const cryptedPassword = account.provider_user_access_info && account.provider_user_access_info.password;
+    const cryptedPassword = accountLink.provider_user_access_info && accountLink.provider_user_access_info.password;
     if (cryptedPassword && crypt(password, cryptedPassword) === cryptedPassword) {
-      return Promise.resolve(account);
+      return Promise.resolve(accountLink);
     }
     return RestfulError.rejectWith(401, 'Wrong credential');
-  }
-
-  getAlParamsForCreate(alParams) {
-    const result = this.checkParams(alParams, ['username', 'password']);
-    if (result) {
-      return Promise.reject(result);
-    }
-    return Promise.resolve({
-      provider_id: this.providerId,
-      provider_user_id: alParams.username,
-      provider_user_access_info: {
-        password: crypt(alParams.password, sha512gen_salt()),
-      },
-    });
   }
 }

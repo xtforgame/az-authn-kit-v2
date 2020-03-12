@@ -17,9 +17,15 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 var AuthProvider = function () {
   function AuthProvider(accountLinkStore) {
     _classCallCheck(this, AuthProvider);
+
+    _defineProperty(this, "accountLinkStore", void 0);
+
+    _defineProperty(this, "checkParams", void 0);
 
     this.accountLinkStore = accountLinkStore;
     this.checkParams = _checkParams["default"];
@@ -27,7 +33,7 @@ var AuthProvider = function () {
 
   _createClass(AuthProvider, [{
     key: "verifyAuthParams",
-    value: function verifyAuthParams() {
+    value: function verifyAuthParams(authParams, accountLink) {
       return _azRestfulHelpers.RestfulError.rejectWith(501, 'this authentication method is not implemented');
     }
   }, {
@@ -41,33 +47,13 @@ var AuthProvider = function () {
         return Promise.reject(result);
       }
 
-      var providerUserId = authParams[this.providerUserIdName];
+      var providerUserId = authParams[this.providerUserId];
       return this.accountLinkStore.findAccountLink(this.providerId, providerUserId).then(function (account) {
         if (!account) {
           return _azRestfulHelpers.RestfulError.rejectWith(401, 'Wrong credential');
         }
 
         return _this.verifyAuthParams(authParams, account);
-      });
-    }
-  }, {
-    key: "getAlParamsForCreate",
-    value: function getAlParamsForCreate() {
-      return _azRestfulHelpers.RestfulError.rejectWith(501, 'this authentication method is not implemented');
-    }
-  }, {
-    key: "createAccountLink",
-    value: function createAccountLink(alParams, user) {
-      var _this2 = this;
-
-      var result = this.checkParams(alParams, this.requiredAuthParams);
-
-      if (result) {
-        return Promise.reject(result);
-      }
-
-      return this.getAlParamsForCreate(alParams).then(function (paramsForCreate) {
-        return _this2.accountLinkStore.createAccountLink(paramsForCreate, user);
       });
     }
   }, {
@@ -81,9 +67,9 @@ var AuthProvider = function () {
       return this.constructor.providerId;
     }
   }, {
-    key: "providerUserIdName",
+    key: "providerUserId",
     get: function get() {
-      return this.constructor.providerUserIdName;
+      return this.constructor.providerUserId;
     }
   }]);
 
@@ -91,3 +77,9 @@ var AuthProvider = function () {
 }();
 
 exports["default"] = AuthProvider;
+
+_defineProperty(AuthProvider, "requiredAuthParams", ['username', 'password']);
+
+_defineProperty(AuthProvider, "providerId", 'basic');
+
+_defineProperty(AuthProvider, "providerUserId", 'username');

@@ -1,10 +1,16 @@
 import { RestfulError } from 'az-restful-helpers';
+import {
+  AuthParams,
+  RequiredAuthParams,
+  CheckParamsFunction,
+  OnCheckParamsFailFunction,
+} from '../interfaces';
 
-export function defaultOnFailToCheckReqParams(value) {
-  return new RestfulError(400, `"${value}" is empty`);
+export function defaultOnFailToCheckReqParams(key) {
+  return new RestfulError(400, `"${key}" is empty`);
 }
 
-export default function checkParams(obj, _requiredParams, onFail = defaultOnFailToCheckReqParams) {
+export default function checkParams(obj : AuthParams, _requiredParams: RequiredAuthParams, onFail : OnCheckParamsFailFunction = defaultOnFailToCheckReqParams) : null | Error {
   const requiredParams = _requiredParams || [];
   for (let i = 0; i < requiredParams.length; i++) {
     // if(!(requiredParams[i] in obj)){

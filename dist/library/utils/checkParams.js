@@ -8,8 +8,8 @@ exports["default"] = checkParams;
 
 var _azRestfulHelpers = require("az-restful-helpers");
 
-function defaultOnFailToCheckReqParams(value) {
-  return new _azRestfulHelpers.RestfulError(400, "\"".concat(value, "\" is empty"));
+function defaultOnFailToCheckReqParams(key) {
+  return new _azRestfulHelpers.RestfulError(400, "\"".concat(key, "\" is empty"));
 }
 
 function checkParams(obj, _requiredParams) {

@@ -3,9 +3,14 @@ import {
   RestfulResponse,
   RestfulError,
 } from 'az-restful-helpers';
+import AuthCore from './AuthCore';
+import AuthProviderManager from './AuthProviderManager';
 
 export default class KoaHelper {
-  constructor(authCore, authProviderManager) {
+  authCore : AuthCore;
+  authProviderManager : AuthProviderManager;
+
+  constructor(authCore : AuthCore, authProviderManager : AuthProviderManager) {
     this.authCore = authCore;
     this.authProviderManager = authProviderManager;
   }

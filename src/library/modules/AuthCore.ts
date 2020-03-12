@@ -1,16 +1,35 @@
 /* eslint-disable no-underscore-dangle */
 import JwtSessionHelper from 'jwt-session-helper';
 
+export type HandleJwtFunctionError = (e: Error) => any;
+
+export type AuthCoreOptions = {
+  jwtSessionHelper?: JwtSessionHelper;
+
+  algorithm?: string;
+  issuer?: string;
+  expiresIn?: string;
+  acceptedIssuers?: string[];
+};
+
 export default class AuthCore {
-  constructor(secret, options = {}) {
+  acceptedIssuers : string[];
+  jwtSessionHelper : JwtSessionHelper;
+  options: AuthCoreOptions;
+  Session: any;
+
+  constructor(secret, options: AuthCoreOptions = {}) {
     const {
       algorithm = 'HS256',
       issuer = 'localhost',
       expiresIn = '1y',
       acceptedIssuers,
     } = options;
-    this.acceptedIssuers = acceptedIssuers;
-    if (!this.acceptedIssuers) {
+    this.acceptedIssuers = [];
+
+    if (acceptedIssuers) {
+      this.acceptedIssuers = acceptedIssuers;
+    } else {
       this.acceptedIssuers = [issuer];
     }
     this.jwtSessionHelper = options.jwtSessionHelper || new JwtSessionHelper(secret, {
@@ -47,16 +66,16 @@ export default class AuthCore {
 
   // =====================================================
 
-  decodeToken = (token, handleError = () => {}) => {
+  decodeToken = (token, handleError : HandleJwtFunctionError = (e : Error) => {}) => {
     try {
       return this.jwtSessionHelper.decode(token);
     } catch (e) {
       handleError(e);
     }
     return null;
-  };
+  }
 
-  verifyToken = (token, handleError = () => {}) => {
+  verifyToken = (token, handleError : HandleJwtFunctionError = (e : Error) => {}) => {
     try {
       const result = this.jwtSessionHelper.verify(token);
       if (!this.acceptedIssuers.includes(result.iss)) {

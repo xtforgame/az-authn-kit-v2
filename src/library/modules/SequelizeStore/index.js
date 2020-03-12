@@ -2,7 +2,7 @@
 // import Sequelize from 'sequelize';
 import { RestfulError } from 'az-restful-helpers';
 
-import AccountLinkStore from '~/AccountLinkStore';
+import AccountLinkStore from '../../core/AccountLinkStore';
 import getAuthAsuModelDefs from './getAuthAsuModelDefs';
 import normalizeModelsOption from './normalizeModelsOption';
 
