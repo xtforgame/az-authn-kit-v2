@@ -12,6 +12,6 @@ export default class AuthProvider {
     get providerUserId(): ProviderUserId;
     verifyAuthParams(authParams: AuthParams, accountLink: AccountLink): any;
     authenticate(authParams: AuthParams): Promise<any>;
-    getAccountLinkParamsForCreate(alParams: AccountLinkParams): AccountLinkParams;
-    createAccountLink(alParams: AccountLinkParams, user: User): any;
+    getAccountLinkParamsForCreate(alParams: AccountLinkParams): Promise<AccountLinkParams>;
+    createAccountLink(alParams: AccountLinkParams, user: User): Promise<any>;
 }

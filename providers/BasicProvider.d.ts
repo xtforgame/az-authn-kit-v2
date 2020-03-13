@@ -5,11 +5,5 @@ export default class BasicProvider extends AuthProvider {
     static providerId: ProviderId;
     static providerUserIdName: ProviderUserId;
     verifyAuthParams(authParams: AuthParams, accountLink: AccountLink): any;
-    getAccountLinkParamsForCreate(alParams: AccountLinkParams): Promise<{
-        provider_id: string;
-        provider_user_id: any;
-        provider_user_access_info: {
-            password: any;
-        };
-    }>;
+    getAccountLinkParamsForCreate(alParams: AccountLinkParams): Promise<AccountLinkParams>;
 }

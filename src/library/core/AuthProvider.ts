@@ -43,11 +43,11 @@ export default class AuthProvider {
     return (<any>this.constructor).providerUserId;
   }
 
-  verifyAuthParams(authParams : AuthParams, accountLink : AccountLink) {
+  verifyAuthParams(authParams : AuthParams, accountLink : AccountLink) : Promise<AccountLink> {
     return RestfulError.rejectWith(501, 'this authentication method is not implemented');
   }
 
-  authenticate(authParams : AuthParams) {
+  authenticate(authParams : AuthParams) : Promise<AccountLink> {
     const result = this.checkParams(authParams, this.requiredAuthParams);
     if (result) {
       return Promise.reject(result);
@@ -62,7 +62,7 @@ export default class AuthProvider {
       });
   }
 
-  getAccountLinkParamsForCreate(alParams : AccountLinkParams) : AccountLinkParams {
+  getAccountLinkParamsForCreate(alParams : AccountLinkParams) : Promise<AccountLinkParams> {
     return RestfulError.rejectWith(501, 'this authentication method is not implemented');
   }
 

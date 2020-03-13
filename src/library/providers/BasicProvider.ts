@@ -21,7 +21,7 @@ export default class BasicProvider extends AuthProvider {
 
   static providerUserIdName : ProviderUserId = 'username';
 
-  verifyAuthParams(authParams : AuthParams, accountLink : AccountLink) {
+  verifyAuthParams(authParams : AuthParams, accountLink : AccountLink) : Promise<AccountLink> {
     const { password } = authParams;
     const cryptedPassword = accountLink.provider_user_access_info && accountLink.provider_user_access_info.password;
     if (cryptedPassword && crypt(password, cryptedPassword) === cryptedPassword) {
@@ -30,7 +30,7 @@ export default class BasicProvider extends AuthProvider {
     return RestfulError.rejectWith(401, 'Wrong credential');
   }
 
-  getAccountLinkParamsForCreate(alParams : AccountLinkParams) {
+  getAccountLinkParamsForCreate(alParams : AccountLinkParams) : Promise<AccountLinkParams> {
     const result = this.checkParams(alParams, ['username', 'password']);
     if (result) {
       return Promise.reject(result);
