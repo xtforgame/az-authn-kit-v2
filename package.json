@@ -60,7 +60,7 @@
     "mocha": "^5.2.0",
     "pg": "^7.4.0",
     "rimraf": "^2.5.4",
-    "sequelize": "^4.26.0",
+    "sequelize": "^5.15.1",
     "sinon": "^4.3.0",
     "tslint": "^5.16.0",
     "tslint-config-airbnb": "^5.11.1",
