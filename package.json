@@ -45,7 +45,7 @@
     "@babel/preset-typescript": "^7.3.3",
     "@babel/register": "^7.4.0",
     "@types/node": "^12.7.5",
-    "axios": "^0.18.1",
+    "axios": "^0.21.1",
     "az-gulp-env-lite": "git+https://github.com/xtforgame/az-gulp-env-lite.git#v2.0.0-alpha.1",
     "az-restful-helpers": "git+https://github.com/xtforgame/az-restful-helpers.git#v0.1.0",
     "az-sequelize-utils": "git+https://github.com/xtforgame/az-sequelize-utils.git#v0.1.0",
